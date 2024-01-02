@@ -10,9 +10,7 @@ app.use(express.json());
 
 app.use(morgan('dev'));
 
-app.listen(3000, () => {
-  console.log('Server listening on port 3000');
-});
-
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+
+module.exports = app;
