@@ -5,7 +5,6 @@ const tours = JSON.parse(
 );
 
 const checkID = (req, res, next, val) => {
-  console.log('Hello from check id middleware!!');
   if (Number(val) > tours.length) {
     return res.status(404).json({
       status: 'fail',
