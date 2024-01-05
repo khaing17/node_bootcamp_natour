@@ -1,27 +1,21 @@
 const fs = require('fs');
 const Tour = require('../model/tour.model');
 
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`).toString()
-);
-
-const checkID = (req, res, next, val) => {
-  if (Number(val) > tours.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-  next();
-};
-
 const getAllTours = async (req, res) => {
   try {
-    const excludeQuery = ['page', 'sort', 'limit', 'fields'];
-    excludeQuery.forEach((el) => delete req.query[el]);
-    const query = { ...req.query };
-    console.log(query);
-    const tours = await Tour.find(query);
+    const queryObj = { ...req.query };
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    excludedFields.forEach((el) => delete queryObj[el]);
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+    let query = Tour.find(JSON.parse(queryStr));
+
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+    }
+
+    const tours = await query;
     res.status(200).json({
       status: 'success',
       results: tours.length,
@@ -117,5 +111,4 @@ module.exports = {
   createTour,
   updateTour,
   deleteTour,
-  checkID,
 };
