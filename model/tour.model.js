@@ -6,6 +6,8 @@ const tourSchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, 'A tour must have a name'],
+      maxLength: [40, 'A tour name must have less or equal then 40 characters'],
+      minLength: [10, 'A tour name must have more or equal then 10 characters'],
     },
     slug: String,
     duration: {
@@ -19,10 +21,20 @@ const tourSchema = new mongoose.Schema(
     difficulty: {
       type: String,
       required: [true, 'A tour must have a difficulty'],
+      enum: {
+        values: ['easy', 'medium', 'difficult'],
+        message: 'Difficulty is either: easy, medium, difficult',
+      },
+    },
+    secretTour: {
+      type: Boolean,
+      default: false,
     },
     ratingsAverage: {
       type: Number,
       default: 0,
+      min: [1, 'Rating must be above 1.0 '],
+      max: [5, 'Rating must be below 5.0'],
     },
     ratingsQuantity: {
       type: Number,
@@ -71,6 +83,24 @@ tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
 });
+
+tourSchema.pre(/^find/, function (next) {
+  this.find({ secretTour: { $ne: true } });
+  this.start = Date.now();
+  next();
+});
+
+tourSchema.post(/^find/, function (docs, next) {
+  console.log(docs);
+  console.log(`Query took ${Date.now() - this.start} milliseconds!`);
+  next();
+});
+
+// tourSchema.post('save', function (doc, next) {
+//   console.log('This will log after all pre save hooks have executed!');
+//   console.log(doc);
+//   next();
+// });
 
 const Tour = mongoose.model('Tour', tourSchema);
 module.exports = Tour;
