@@ -5,6 +5,7 @@ const globalErrorHandler = require('./controllers/error.controller');
 const app = express();
 
 //Routes
+const auth = require('./routes/auth.route');
 const tourRouter = require('./routes/tour.route');
 const userRouter = require('./routes/user.route');
 
@@ -14,6 +15,7 @@ app.use(morgan('dev'));
 console.log('Node Env Variables', process.env.NODE_ENV);
 
 //Routes Handler
+app.use('/api/v1/auth', auth);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
