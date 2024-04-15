@@ -56,6 +56,7 @@ const logIn = catchAsync(async (req, res, next) => {
 const protect = catchAsync(async (req, res, next) => {
   let token;
 
+  //get the token and check if it's there
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
@@ -68,17 +69,29 @@ const protect = catchAsync(async (req, res, next) => {
       new AppError("You're not logged in! Please login to get access.")
     );
   }
-  //get the token and check if it's there
 
   //verify the token
-  const decode = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  console.log(decode);
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  console.log(decoded);
 
   //check if the user still exists
-
-  //check if the user still exists
-
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) {
+    return next(
+      new AppError(
+        'The user belonging to this token does no longer exist.',
+        401
+      )
+    );
+  }
   //check if the user changed the password after the token was issued
+  if (currentUser.changedPasswordAfter(decoded.iat)) {
+    return next(
+      new AppError('User recently changed password! Please login again.', 401)
+    );
+  }
+
+  req.user = currentUser;
   next();
 });
 
