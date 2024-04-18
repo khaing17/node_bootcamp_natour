@@ -10,6 +10,6 @@ const router = express.Router();
 router.route('/sign-up').post(signUp);
 router.route('/log-in').post(logIn);
 router.route('/forgot-password').post(forgotPassword);
-router.route('/reset-password').post(resetPassword);
+router.route('/reset-password/:token').patch(resetPassword);
 
 module.exports = router;
