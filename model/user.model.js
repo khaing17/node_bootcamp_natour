@@ -42,6 +42,10 @@ const userSchema = new mongoose.Schema({
   passwordResetExpires: Date,
   passwordResetToken: String,
   changePasswordAt: Date,
+  isActive: {
+    type: Boolean,
+    select: false,
+  },
 });
 
 userSchema.pre('save', async function (next) {
@@ -53,9 +57,16 @@ userSchema.pre('save', async function (next) {
 });
 
 userSchema.pre('save', function (next) {
-  if (!this.isModified('password') || this.isNew) next();
+  if (!this.isModified('password') || this.isNew) {
+    return next();
+  }
   //Saving the data to the db is kinda slow, so we need to subtract 1 second, it doesn't affect anything but still!!
   this.changePasswordAt = Date.now() - 1000;
+  next();
+});
+
+userSchema.pre(/^find/, function (next) {
+  this.find({ isActive: { $ne: false } });
   next();
 });
 
@@ -84,7 +95,6 @@ userSchema.methods.createPasswordResetToken = function () {
     .update(resetToken)
     .digest('hex');
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
-  console.log(resetToken);
   return resetToken;
 };
 
