@@ -39,8 +39,13 @@ const userSchema = new mongoose.Schema({
       message: 'Passwords are not the same!',
     },
   },
+  passwordResetExpires: Date,
   passwordResetToken: String,
   changePasswordAt: Date,
+  isActive: {
+    type: Boolean,
+    select: false,
+  },
 });
 
 userSchema.pre('save', async function (next) {
@@ -48,6 +53,20 @@ userSchema.pre('save', async function (next) {
 
   this.password = await bcrypt.hash(this.password, 12);
   this.passwordConfirmed = undefined;
+  next();
+});
+
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) {
+    return next();
+  }
+  //Saving the data to the db is kinda slow, so we need to subtract 1 second, it doesn't affect anything but still!!
+  this.changePasswordAt = Date.now() - 1000;
+  next();
+});
+
+userSchema.pre(/^find/, function (next) {
+  this.find({ isActive: { $ne: false } });
   next();
 });
 
@@ -76,7 +95,6 @@ userSchema.methods.createPasswordResetToken = function () {
     .update(resetToken)
     .digest('hex');
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
-  console.log('RESET TOKEN', resetToken, this.passwordResetToken);
   return resetToken;
 };
 

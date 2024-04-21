@@ -106,7 +106,7 @@ const getTourStats = catchAsync(async (req, res, next) => {
       },
     },
     {
-      sort: { avgPrice: 1 },
+      $sort: { avgPrice: 1 },
     },
   ]);
   res.status(200).json({
