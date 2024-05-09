@@ -18,7 +18,7 @@ const reviewSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: 'Tour',
   },
-  user: {
+  author: {
     type: mongoose.Schema.ObjectId,
     ref: 'User',
   },
