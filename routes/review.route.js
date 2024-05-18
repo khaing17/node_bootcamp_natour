@@ -4,7 +4,9 @@ const {
   writeReview,
 } = require('../controllers/review.controller');
 const { protect, restrictTo } = require('../controllers/auth.controller');
-const router = express.Router();
+const router = express.Router({
+  mergeParams: true,
+});
 
 router
   .route('/')

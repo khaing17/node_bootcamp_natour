@@ -9,7 +9,12 @@ const {
   updateMe,
   deleteMe,
 } = require('../controllers/user.controller');
-const { protect, updatePassword } = require('../controllers/auth.controller');
+const {
+  protect,
+  updatePassword,
+  restrictTo,
+} = require('../controllers/auth.controller');
+
 /**
  * This routes are for authenticated user only
  */
