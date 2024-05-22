@@ -17,7 +17,13 @@ const createOne = (Model) => {
 
 const getAll = (Model) => {
   return catchAsync(async (req, res, next) => {
-    const modelQuery = Model.find();
+    /**
+     * To allow nested route with tour
+     */
+    let filter = {};
+    if (req.params.tourId) filter = { tour: req.params.tourId };
+
+    const modelQuery = Model.find(filter);
     const features = new ApiFeatures(modelQuery, req.query)
       .filter()
       .sort()
