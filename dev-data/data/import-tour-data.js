@@ -6,6 +6,8 @@ dotenv.config({ path: './config.env' });
 const app = require('../../app');
 const Tour = require('../../model/tour.model');
 const { json } = require('express');
+const User = require('../../model/user.model');
+const Review = require('../../model/review.model');
 
 const DB = process.env.DB;
 
@@ -17,11 +19,18 @@ mongoose.connect(DB).then((con) => {
 });
 
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`).toString());
+const users = JSON.parse(fs.readFileSync(`${__dirname}/users.json`).toString());
+const reviews = JSON.parse(
+  fs.readFileSync(`${__dirname}/reviews.json`).toString()
+);
 
 const importData = async () => {
   try {
+    await User.create(users, { validateBeforeSave: false });
+
     await Tour.create(tours);
-    console.log('tour created!');
+    await Review.create(reviews);
+    console.log('data created!');
   } catch (error) {
     console.log('Error 😒😒', error);
     console.log('error creating');
@@ -32,10 +41,12 @@ const importData = async () => {
 const deleteData = async () => {
   try {
     await Tour.deleteMany();
-    console.log('tour deleted!');
+    await User.deleteMany();
+    await Review.deleteMany();
+    console.log('data deleted!');
   } catch (error) {
     console.log('Error 😒😒', error);
-    console.log('error creating');
+    console.log('error deleting');
   }
   process.exit();
 };

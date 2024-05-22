@@ -26,6 +26,11 @@ const deleteUser = factory.deleteOne(User);
  */
 
 //this is for updating the user itself
+const getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
+
 const updateMe = catchAsync(async (req, res, next) => {
   if (req.body.password || req.body.passwordConfirm) {
     return next(new AppError('This route is not for updating password!', 400));
@@ -61,4 +66,5 @@ module.exports = {
   deleteUser,
   updateMe,
   deleteMe,
+  getMe,
 };
