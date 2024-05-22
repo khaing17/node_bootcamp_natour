@@ -3,7 +3,6 @@ const router = express.Router();
 const {
   getAllUsers,
   getUser,
-  createUser,
   updateUser,
   deleteUser,
   updateMe,
@@ -25,7 +24,7 @@ router.route('/update-password').patch(protect, updatePassword);
 /**
  * This routes are to use in administrate
  */
-router.route('/').get(getAllUsers).post(createUser);
+router.route('/').get(getAllUsers);
 router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
 
 module.exports = router;
