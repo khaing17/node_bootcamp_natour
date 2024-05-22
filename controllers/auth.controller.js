@@ -105,7 +105,6 @@ const protect = catchAsync(async (req, res, next) => {
   }
 
   req.user = currentUser;
-  console.log('Currently logged in user=>', req.user);
   next();
 });
 

@@ -2,6 +2,7 @@ const express = require('express');
 const {
   getAllReviews,
   writeReview,
+  deleteReview,
 } = require('../controllers/review.controller');
 const { protect, restrictTo } = require('../controllers/auth.controller');
 const router = express.Router({
@@ -12,6 +13,8 @@ router
   .route('/')
   .get(getAllReviews)
   .post(protect, restrictTo('user'), writeReview);
+
+router.route('/:id').delete(deleteReview);
 // router
 //   .route('/:id')
 //   .get(getRev)
