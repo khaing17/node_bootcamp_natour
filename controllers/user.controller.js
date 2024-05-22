@@ -4,32 +4,21 @@ const filterObj = require('../utils/filterObj');
 const factory = require('./handlerFactory');
 
 //this is to use in administrate
-const getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
 
-  res.status(200).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
-const createUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
-  });
-};
+// const createUser = (req, res) => {
+//   res.status(500).json({
+//     status: 'error',
+//     message: 'This route is not yet defined!',
+//   });
+// };
+const getAllUsers = factory.getAll(User);
+
+const getUser = factory.getOne(User);
+//do not update password with this controller
 const updateUser = factory.updateOne(User);
 
-const getUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
-  });
-};
 const deleteUser = factory.deleteOne(User);
+
 //////////////////////////////////////
 
 /**
@@ -68,7 +57,6 @@ const deleteMe = catchAsync(async (req, res, next) => {
 module.exports = {
   getAllUsers,
   getUser,
-  createUser,
   updateUser,
   deleteUser,
   updateMe,
