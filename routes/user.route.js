@@ -7,6 +7,7 @@ const {
   deleteUser,
   updateMe,
   deleteMe,
+  getMe,
 } = require('../controllers/user.controller');
 const {
   protect,
@@ -17,13 +18,19 @@ const {
 /**
  * This routes are for authenticated user only
  */
-router.route('/update-profile').patch(protect, updateMe);
-router.route('/delete-account').delete(protect, deleteMe);
-router.route('/update-password').patch(protect, updatePassword);
+
+router.use(protect);
+
+router.route('/me').get(getMe, getUser);
+
+router.route('/update-profile').patch(updateMe);
+router.route('/delete-account').delete(deleteMe);
+router.route('/update-password').patch(updatePassword);
 
 /**
  * This routes are to use in administrate
  */
+router.use(restrictTo('admin'));
 router.route('/').get(getAllUsers);
 router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
 
