@@ -1,6 +1,8 @@
 const User = require('../model/user.model');
 const catchAsync = require('../utils/catchAsync');
 const filterObj = require('../utils/filterObj');
+const factory = require('./handlerFactory');
+
 //this is to use in administrate
 const getAllUsers = catchAsync(async (req, res, next) => {
   const users = await User.find();
@@ -19,24 +21,16 @@ const createUser = (req, res) => {
     message: 'This route is not yet defined!',
   });
 };
-const updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
-  });
-};
+const updateUser = factory.updateOne(User);
+
 const getUser = (req, res) => {
   res.status(500).json({
     status: 'error',
     message: 'This route is not yet defined!',
   });
 };
-const deleteUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined!',
-  });
-};
+const deleteUser = factory.deleteOne(User);
+//////////////////////////////////////
 
 /**
  * This is for the authenticated user only

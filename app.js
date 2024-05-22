@@ -67,11 +67,13 @@ app.use((req, res, next) => {
 const auth = require('./routes/auth.route');
 const tourRouter = require('./routes/tour.route');
 const userRouter = require('./routes/user.route');
+const reviewRouter = require('./routes/review.route');
 
 //Routes Handler
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 //Error handling for unhandled routes
 app.all('*', (req, res, next) => {
