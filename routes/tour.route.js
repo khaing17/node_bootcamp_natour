@@ -22,8 +22,11 @@ router.use('/:tourId/reviews', reviewRouter);
 router.route('/tours-stats').get(getTourStats);
 router
   .route('/monthly-plan/:year')
-  .get(restrictTo('admin', 'lead-guide', 'guide'), getMonthlyPlans);
-router.route('/top-5-cheap').get(aliasTopTours, getAllTours);
+  .get(protect, restrictTo('admin', 'lead-guide', 'guide'), getMonthlyPlans);
+
+router
+  .route('/top-5-cheap')
+  .get(protect, restrictTo('admin'), aliasTopTours, getAllTours);
 
 //Basic crud
 router

@@ -80,7 +80,7 @@ const protect = catchAsync(async (req, res, next) => {
 
   if (!token) {
     return next(
-      new AppError("You're not logged in! Please login to get access.")
+      new AppError("You're not logged in! Please login to get access.", 401)
     );
   }
 
@@ -109,6 +109,7 @@ const protect = catchAsync(async (req, res, next) => {
 });
 
 const restrictTo = (...roles) => {
+  console.log(roles);
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return next(
